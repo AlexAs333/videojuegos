@@ -1,0 +1,16 @@
+# Visual Studio: Archivos temporales y de usuario
+.vs/
+*.user
+*.db
+*.opendb
+
+# Carpetas de compilación (esto es lo que NO queremos subir)
+**/x64/
+**/Debug/
+**/Release/
+**/build/
+**/bin/
+
+# PERO: Forzar que las DLLs de la carpeta dungeoncrawler se suban
+# (Son las que usará el comando xcopy para tus compañeros)
+!dungeoncrawler/*.dll
