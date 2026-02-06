@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="dungeoncrawler.vcxproj" />
+  <Project Path="dungeoncrawler.vcxproj" Id="0e811397-7246-4588-ac3b-31a9cfa82caa" />
 </Solution>
