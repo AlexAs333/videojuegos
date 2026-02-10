@@ -1,29 +1,32 @@
-#include <SFML/Graphics.hpp>
+#include <SDL2/SDL.h>
+#include <iostream>
 
-int main() {
-    // CAMBIO 1: SFML 3 usa llaves {} para definir tamaños (Vector2u)
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "Test");
-
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Cyan);
-    
-    // CAMBIO 2: Para posiciones también se usan llaves {} (Vector2f)
-    shape.setPosition({300.f, 200.f});
-
-    while (window.isOpen()) {
-        // CAMBIO 3: El manejo de eventos ha cambiado totalmente.
-        // Ahora pollEvent() no pide parámetros y devuelve un opcional.
-        while (const std::optional event = window.pollEvent()) {
-            
-            // CAMBIO 4: Para cerrar, se verifica si el evento es del tipo Closed
-            if (event->is<sf::Event::Closed>()) {
-                window.close();
-            }
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
+int main(int argc, char* argv[]) {
+    // Inicializar SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cout << "Error SDL: " << SDL_GetError() << std::endl;
+        return -1;
     }
+
+    // Crear ventana (Sintaxis SDL2: X, Y, W, H, Flags)
+    SDL_Window* window = SDL_CreateWindow(
+        "Proyecto SDL2",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        800, 600,
+        SDL_WINDOW_SHOWN
+    );
+
+    if (!window) {
+        std::cout << "Error Ventana: " << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    // Esperar 3 segundos
+    SDL_Delay(3000);
+
+    // Limpiar
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
     return 0;
 }
