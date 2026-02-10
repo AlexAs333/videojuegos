@@ -1,64 +1,68 @@
-# --- Configuración General ---
+# --- Nombres y Directorios ---
 APP_NAME := mi_app
 SRC_DIR  := src
 BIN_DIR  := bin
 INC_DIR  := include
+
+# --- Configuración del Compilador ---
 CXX      := g++
 CXXFLAGS := -std=c++17 -Wall -I$(INC_DIR)
+SRC      := $(wildcard $(SRC_DIR)/*.cpp)
 
-# --- Detección del Sistema Operativo ---
+# --- DETECCIÓN DE SISTEMA OPERATIVO ---
 ifeq ($(OS),Windows_NT)
-    # Detectado Windows
+    # ---------------- WINDOWS ----------------
     DETECTED_OS := Windows
+    TARGET      := $(BIN_DIR)/$(APP_NAME).exe
     LIB_DIR     := lib/windows
-    EXT         := .exe
     
-    # Flags de Windows (MinGW)
-    # -static-libgcc -static-libstdc++ ayudan a evitar dependencias extra de MinGW
-    LDFLAGS := -L$(LIB_DIR) -lsfml-graphics -lsfml-window -lsfml-system -static-libgcc -static-libstdc++
+    # Flags para Windows
+    LDFLAGS     := -L$(LIB_DIR) -lsfml-graphics -lsfml-window -lsfml-system -static-libgcc -static-libstdc++ -mwindows
+
+    # Comandos AJUSTADOS: Escribimos las rutas "a lo bruto" con \ para que copy no falle
+    MKDIR_CMD   := if not exist bin mkdir bin
+    # El 1>NUL silencia la salida correcta, el 2>NUL silencia errores (opcional)
+    COPY_CMD    := cmd /C "copy /Y lib\windows\*.dll bin 1>NUL"
+    CLEAN_CMD   := if exist bin rmdir /s /q bin
     
-    # Comando para copiar las DLLs necesarias al lado del ejecutable
-    COPY_CMD := copy $(LIB_DIR)\*.dll $(BIN_DIR) >NUL
-    MKDIR_CMD := if not exist $(BIN_DIR) mkdir $(BIN_DIR)
-    CLEAN_CMD := if exist $(BIN_DIR) rmdir /s /q $(BIN_DIR)
 else
-    # Detectado Linux (o Unix-like)
+    # ---------------- LINUX / UNIX ----------------
     DETECTED_OS := Linux
+    TARGET      := $(BIN_DIR)/$(APP_NAME)
     LIB_DIR     := lib/linux
-    EXT         := 
     
-    # Flags de Linux
-    # -Wl,-rpath,'$ORIGIN/../lib/linux' le dice al ejecutable dónde buscar las libs sin instalar nada
-    LDFLAGS := -L$(LIB_DIR) -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath,'$$ORIGIN/../$(LIB_DIR)'
-    
-    # Comandos Linux
-    COPY_CMD := echo "Configuración Linux lista."
-    MKDIR_CMD := mkdir -p $(BIN_DIR)
-    CLEAN_CMD := rm -rf $(BIN_DIR)
+    # Flags para Linux
+    LDFLAGS     := -L$(LIB_DIR) -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath,'$$ORIGIN/../$(LIB_DIR)'
+
+    # Comandos Bash estándar
+    MKDIR_CMD   := mkdir -p $(BIN_DIR)
+    COPY_CMD    := echo "Linux: No es necesario copiar DLLs."
+    CLEAN_CMD   := rm -rf $(BIN_DIR)
 endif
 
-# --- Archivos ---
-SRC    := $(wildcard $(SRC_DIR)/*.cpp)
-TARGET := $(BIN_DIR)/$(APP_NAME)$(EXT)
-
-# --- Reglas ---
+# --- REGLAS ---
 
 all: info $(TARGET)
 
 info:
-	@echo "Sistema detectado: $(DETECTED_OS)"
-	@echo "Compilando para $(DETECTED_OS)..."
+	@echo ---------------------------------------
+	@echo Sistema detectado: $(DETECTED_OS)
+	@echo ---------------------------------------
 
 $(TARGET): $(SRC)
+	@echo [1/3] Creando directorios...
 	@$(MKDIR_CMD)
+	@echo [2/3] Compilando codigo fuente...
 	$(CXX) $(SRC) -o $(TARGET) $(CXXFLAGS) $(LDFLAGS)
+	@echo [3/3] Configurando librerias...
 	@$(COPY_CMD)
-	@echo "----------------------------------------"
-	@echo "Compilacion exitosa: $(TARGET)"
-	@echo "----------------------------------------"
+	@echo ---------------------------------------
+	@echo EXITO. Ejecutable listo en: $(TARGET)
+	@echo ---------------------------------------
 
 clean:
+	@echo Limpiando proyecto...
 	@$(CLEAN_CMD)
-	@echo "Limpieza completada."
+	@echo Hecho.
 
 .PHONY: all clean info
