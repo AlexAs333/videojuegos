@@ -28,6 +28,7 @@ private:
 
     GameObject* player;
     GameObject* enemy;
+    GameObject* background;
 
 };
 

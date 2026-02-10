@@ -10,6 +10,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    
     // El Bucle de Juego (Game Loop)
     while (game->running()) {
         game->handleEvents();

@@ -5,10 +5,10 @@
 
 // Constructor
 Enemy::Enemy(const string& enemyName, float startX, float startY)
-	: name(enemyName), x(startX), y(startY),
+	: x(startX), y(startY),
 	speedX(0), speedY(0), speed(100.0f),
 	facing(DOWN), currentState(IDLE),
-	isDead(false), lastAttackTime(0.0f)
+	lastAttackTime(0.0f), name(enemyName), isDead(false)
 {
 	// default values (children may modify)
 	strength = 10;
@@ -79,6 +79,12 @@ void Enemy::updateAI(float deltaTime, Player* player) {
 			patrolBehavior(deltaTime);
 			if (distanceToPlayer < detectionRange) {
 				currentState = CHASE;
+			}
+			break;
+		case CHASE:
+			chaseBehavior(deltaTime, player);
+			if (distanceToPlayer <= attackRange) {
+				currentState = ATTACK;
 			}
 			break;
 		case ATTACK:
