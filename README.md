@@ -1,10 +1,9 @@
 # videojuegos
-
-Aquí tienes. Copia desde la línea de abajo hasta el final del mensaje y pégalo en tu archivo `README.md`.
+.
 
 ---
 
-# Proyecto Universal SFML (Portable)
+# Proyecto
 
 Este proyecto es una plantilla configurada para compilar videojuegos en C++ con SFML 3.0. Es portable: incluye las librerías necesarias (.dll, .a, .so) localmente, por lo que funciona en Windows y Linux sin configuraciones complejas.
 
