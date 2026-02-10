@@ -15,15 +15,24 @@ Para compilar, necesitas `g++` y `make`.
 
 Si es tu primera vez, necesitas instalar un gestor de paquetes y las herramientas. Abre **PowerShell como Administrador** y sigue estos pasos:
 
-**Paso 1: Instalar Chocolatey**
+### Paso 1: Instalar Chocolatey
+
 Copia, pega y pulsa Enter:
 
-```Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('[https://community.chocolatey.org/install.ps1](https://www.google.com/search?q=https://community.chocolatey.org/install.ps1)'))```
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; `
+[System.Net.ServicePointManager]::SecurityProtocol = `
+[System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
 
-**Paso 2: Instalar Compilador y Make**
+### Paso 2: Instalar Compilador y Make
+
 Una vez termine el paso anterior, ejecuta:
 
-```choco install mingw make -y```
+```powershell
+choco install mingw make -y
+```
 
 > **IMPORTANTE:** Cierra la terminal y abre una nueva para que los comandos funcionen.
 
