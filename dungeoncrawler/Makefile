@@ -7,7 +7,10 @@ INC_DIR  := include
 # --- Configuración del Compilador ---
 CXX      := g++
 CXXFLAGS := -std=c++17 -Wall -I$(INC_DIR)
-SRC      := $(wildcard $(SRC_DIR)/*.cpp)
+
+# --- BÚSQUEDA DE ARCHIVOS (LA PARTE IMPORTANTE) ---
+# Busca .cpp en src/ Y TAMBIÉN en cualquier subcarpeta (ej: src/Entities/Enemy.cpp)
+SRC      := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
 
 # --- DETECCIÓN DE SISTEMA OPERATIVO ---
 ifeq ($(OS),Windows_NT)
@@ -17,11 +20,12 @@ ifeq ($(OS),Windows_NT)
     LIB_DIR     := lib/windows
     
     # Flags para Windows
+    # -mwindows oculta la consola. Quítalo si quieres ver couts.
     LDFLAGS     := -L$(LIB_DIR) -lsfml-graphics -lsfml-window -lsfml-system -static-libgcc -static-libstdc++ -mwindows
 
-    # Comandos AJUSTADOS: Escribimos las rutas "a lo bruto" con \ para que copy no falle
+    # Comandos (Compatibles con CMD/PowerShell)
     MKDIR_CMD   := if not exist bin mkdir bin
-    # El 1>NUL silencia la salida correcta, el 2>NUL silencia errores (opcional)
+    # Copia DLLs silenciando la salida para que no moleste
     COPY_CMD    := cmd /C "copy /Y lib\windows\*.dll bin 1>NUL"
     CLEAN_CMD   := if exist bin rmdir /s /q bin
     
@@ -47,12 +51,13 @@ all: info $(TARGET)
 info:
 	@echo ---------------------------------------
 	@echo Sistema detectado: $(DETECTED_OS)
+	@echo Archivos encontrados: $(SRC)
 	@echo ---------------------------------------
 
 $(TARGET): $(SRC)
 	@echo [1/3] Creando directorios...
 	@$(MKDIR_CMD)
-	@echo [2/3] Compilando codigo fuente...
+	@echo [2/3] Compilando todo el proyecto...
 	$(CXX) $(SRC) -o $(TARGET) $(CXXFLAGS) $(LDFLAGS)
 	@echo [3/3] Configurando librerias...
 	@$(COPY_CMD)
