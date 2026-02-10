@@ -1,8 +1,5 @@
 # videojuegos
-.
-
 ---
-
 # Proyecto
 
 Este proyecto es una plantilla configurada para compilar videojuegos en C++ con SFML 3.0. Es portable: incluye las librerías necesarias (.dll, .a, .so) localmente, por lo que funciona en Windows y Linux sin configuraciones complejas.
@@ -40,28 +37,40 @@ choco install mingw make -y
 
 Solo necesitas las herramientas esenciales. Abre una terminal y ejecuta:
 
-```sudo apt update```
-```sudo apt install build-essential -y```
+```bash
+sudo apt update
+```
+```bash
+sudo apt install build-essential -y
+```
 
 ## 2. Compilar y Ejecutar
 
 Abre una terminal en la carpeta de este proyecto (donde está el Makefile) y usa estos comandos:
 
 **Compilar:**
-```make```
+```powershell
+make
+```
 
 **Limpiar:**
-```make clean```
+```powershell
+make clean
+```
 
 ### Ejecutar el Juego
 
 Una vez compilado, el ejecutable se genera automáticamente en la carpeta bin.
 
 **Windows:**
-```.\bin\mi_app.exe```
+```powershell
+.\bin\mi_app.exe
+```
 
 **Linux:**
-```./bin/mi_app```
+```bash
+./bin/mi_app
+```
 
 ## 3. Estructura del Proyecto
 
