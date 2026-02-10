@@ -2,7 +2,7 @@
 
 int main() {
     // CAMBIO 1: SFML 3 usa llaves {} para definir tamaños (Vector2u)
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "Proyecto Universal (SFML 3)");
+    sf::RenderWindow window(sf::VideoMode({800, 600}), "Test");
 
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Cyan);
