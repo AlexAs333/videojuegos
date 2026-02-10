@@ -2,7 +2,7 @@
 ---
 # Proyecto
 
-Este proyecto es una plantilla configurada para compilar videojuegos en C++ con SFML 3.0. Es portable: incluye las librerías necesarias (.dll, .a, .so) localmente, por lo que funciona en Windows y Linux sin configuraciones complejas.
+Este proyecto es una plantilla configurada para compilar videojuegos en C++ con SDL 3.0. Es portable: incluye las librerías necesarias (.dll, .a, .so) localmente, por lo que funciona en Windows y Linux sin configuraciones complejas.
 
 ## 1. Instalación de Herramientas (Desde Cero)
 
