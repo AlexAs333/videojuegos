@@ -1,16 +1,17 @@
-# --- PROYECTO SDL2 UNIVERSAL ---
+# --- PROYECTO SDL2 + SDL2_IMAGE UNIVERSAL ---
 
-# Configuración
+# 1. Configuración del Proyecto
 APP_NAME := mi_juego
 SRC_DIR  := src
 BIN_DIR  := bin
 INC_DIR  := include
 
-# Compilador
+# 2. Compilador
 CXX      := g++
 CXXFLAGS := -std=c++17 -Wall -I$(INC_DIR)
 
-# Búsqueda Recursiva: Encuentra .cpp en src/ y en subcarpetas (src/Entities/...)
+# 3. Búsqueda de Archivos Fuente (Recursiva)
+# Busca archivos .cpp en 'src/' y en cualquier subcarpeta (ej: 'src/Entities/Enemy.cpp')
 SRC      := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
 
 # --- DETECCIÓN DE SISTEMA OPERATIVO ---
@@ -20,51 +21,55 @@ ifeq ($(OS),Windows_NT)
     TARGET      := $(BIN_DIR)/$(APP_NAME).exe
     LIB_DIR     := lib/windows
     
-    # Flags OBLIGATORIOS para SDL2 en Windows (El orden importa):
-    # 1. mingw32 (necesario para el sistema)
-    # 2. SDL2main (maneja el punto de entrada WinMain)
-    # 3. SDL2 (la librería en sí)
-    # -mwindows: Oculta la consola negra (quítalo si quieres ver std::cout)
-    LDFLAGS     := -L$(LIB_DIR) -lmingw32 -lSDL2main -lSDL2 -mwindows -static-libgcc -static-libstdc++
+    # Flags de Enlace (Linker) para Windows:
+    # IMPORTANTE: El orden es vital. 
+    # 1. -lmingw32      (Sistema)
+    # 2. -lSDL2main     (Entrada Main)
+    # 3. -lSDL2         (Librería base)
+    # 4. -lSDL2_image   (Librería de imágenes)
+    # -mwindows: Oculta la consola negra (quítalo si quieres ver std::cout para depurar)
+    LDFLAGS     := -L$(LIB_DIR) -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -mwindows -static-libgcc -static-libstdc++
 
-    # Comandos CMD para Windows
+    # Comandos para Windows (usando cmd /C para compatibilidad)
     MKDIR_CMD   := if not exist bin mkdir bin
-    # Copia la DLL automáticamente al compilar
-    COPY_CMD    := cmd /C "copy /Y lib\windows\SDL2.dll bin 1>NUL"
+    # Copia TODAS las DLLs (*.dll) porque SDL2_image necesita zlib1.dll, libpng16.dll, etc.
+    COPY_CMD    := cmd /C "copy /Y lib\windows\*.dll bin 1>NUL"
     CLEAN_CMD   := if exist bin rmdir /s /q bin
     
 else
     # ---------------- LINUX ----------------
     DETECTED_OS := Linux
     TARGET      := $(BIN_DIR)/$(APP_NAME)
+    LIB_DIR     := lib/linux
     
-    # En Linux usamos la librería del sistema (más estable)
-    LDFLAGS     := -lSDL2
+    # Flags de Enlace para Linux
+    LDFLAGS     := -L$(LIB_DIR) -lSDL2 -lSDL2_image -Wl,-rpath,'$$ORIGIN/../$(LIB_DIR)'
 
+    # Comandos para Linux
     MKDIR_CMD   := mkdir -p $(BIN_DIR)
-    COPY_CMD    := echo "Linux: Listo."
+    COPY_CMD    := echo "Linux: Librerías listas."
     CLEAN_CMD   := rm -rf $(BIN_DIR)
 endif
 
-# --- REGLAS (NO TOCAR) ---
+# --- REGLAS DE COMPILACIÓN ---
 
 all: info $(TARGET)
 
 info:
 	@echo ---------------------------------------
-	@echo Sistema: $(DETECTED_OS) (Modo SDL2)
-	@echo Archivos: $(SRC)
+	@echo Sistema detectado: $(DETECTED_OS)
+	@echo Compilando archivos: $(SRC)
 	@echo ---------------------------------------
 
 $(TARGET): $(SRC)
-	@echo [1/3] Creando carpetas...
+	@echo [1/3] Creando carpeta bin...
 	@$(MKDIR_CMD)
-	@echo [2/3] Compilando...
+	@echo [2/3] Compilando y Enlazando...
 	$(CXX) $(SRC) -o $(TARGET) $(CXXFLAGS) $(LDFLAGS)
-	@echo [3/3] Instalando DLLs...
+	@echo [3/3] Copiando librerias dinamicas (DLLs)...
 	@$(COPY_CMD)
 	@echo ---------------------------------------
-	@echo EXITO. Ejecuta: $(TARGET)
+	@echo EXITO. Ejecutable listo en: $(TARGET)
 	@echo ---------------------------------------
 
 clean:
