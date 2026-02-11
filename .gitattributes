@@ -1,0 +1,7 @@
+# Forzar scripts de shell a usar siempre salto de linea LF (Linux)
+*.sh text eol=lf
+
+# El resto de archivos de texto que use lo que quiera el sistema
+*.txt text
+*.cpp text
+*.h text

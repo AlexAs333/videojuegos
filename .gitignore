@@ -4,3 +4,45 @@
 *.db
 *.opendb
 
+# --- Carpetas de Compilación y Temporales ---
+build/
+bin/
+Debug/
+Release/
+x64/
+x86/
+temp/
+tmp/
+
+# --- Archivos intermedios y Binarios ---
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.pdb
+*.ilk
+*.log
+*.tlog
+*.idb
+
+# --- CMake ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.cmake
+Makefile
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.sln
+*.vcxproj
+*.vcxproj.user
+
+# --- EXCEPCIONES (Mantener librerías originales) ---
+!dungeoncrawler/lib/**/*.dll
+!dungeoncrawler/lib/**/*.lib
+!dungeoncrawler/lib/**/*.a
