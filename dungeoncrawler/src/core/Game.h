@@ -2,9 +2,11 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
-#include "GameObject.h"
+#include "../Entities/Character.h"
 #include <iostream>
 
+class Player; // Forward declaration
+class Enemy; // Forward declaration
 
 class Game {
 public:
@@ -26,9 +28,13 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer; // El "pincel" que dibuja todo
 
-    GameObject* player;
-    GameObject* enemy;
+    Player* player;
+    Enemy* enemy;
     GameObject* background;
+
+    // Timing
+    Uint32 lastTime;
+    float deltaTime;
 
 };
 

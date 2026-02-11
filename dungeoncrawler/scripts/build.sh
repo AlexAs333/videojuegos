@@ -12,7 +12,7 @@ mkdir -p "$ROOT_DIR/build"
 cd "$ROOT_DIR/build" || exit
 
 echo "[CMAKE] Configurando..."
-cmake ..
+cmake -G "MinGW Makefiles" ..
 if [ $? -ne 0 ]; then
     echo "[ERROR] Fallo en cmake configuration."
     exit 1

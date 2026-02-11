@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "../Entities/Player.h"
+#include "../Entities/Enemy.h"
 #include "TextureManager.h"
 #include "InputHandler.h"
 #include <SDL2/SDL_image.h>
@@ -24,9 +26,12 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
             }
 
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            player = new GameObject("../assets/goblin.png", renderer, 100, 100);
-            enemy = new GameObject("../assets/goblin.png", renderer, 200, 200);
+            player = new Player("assets/human.png", renderer, 100, 100);
+            enemy = new Enemy("Goblin", "assets/goblin.png", renderer, 400, 300);
 
+            lastTime = SDL_GetTicks();
+            deltaTime = 0.0f;
+            
             isRunning = true;
         }
         else {
@@ -52,15 +57,31 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    player->Update(); // El objeto recalcula sus rect�ngulos internos
-    enemy->Update();
+    // Calculate delta time
+    Uint32 currentTime = SDL_GetTicks();
+    deltaTime = (currentTime - lastTime) / 1000.0f; // Convert to seconds
+    lastTime = currentTime;
+
+    // cap delta time to avoid big jumps
+    if (deltaTime > 0.05f) deltaTime = 0.05f;
+
+    // Update player and enemy
+    player->update(deltaTime);
+    enemy->update(deltaTime, player);
+
+    // player attack with SPACE
+    if (InputHandler::IsKeyDown(SDL_SCANCODE_SPACE)) {
+        player->attack(enemy);
+    }
 }
 
 void Game::render() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // fondo negro
+
     SDL_RenderClear(renderer);
 
-    player->Render(); // El objeto se dibuja solo
-    enemy->Render();
+    player->render(); 
+    enemy->render();
 
     SDL_RenderPresent(renderer);
 }
