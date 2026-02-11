@@ -9,7 +9,7 @@ Enemy::Enemy(const string& enemyName, const char* texturesheet, SDL_Renderer* re
     speed = 100.0f;
     detectionRange = 200.0f;
     attackRange = 50.0f;
-    attackCooldown = 1.5f;
+    attackCooldown = 0.5f;
     debugColor = {255, 0, 0, 255};
 }
 
@@ -17,6 +17,19 @@ Enemy::~Enemy() {}
 
 void Enemy::update(float deltaTime, Player* player) {
     if (isDead) return;
+
+    // debug info 
+    /*std::string stateName;
+    switch (currentState) {
+        case IDLE: stateName = "IDLE"; break;
+        case PATROL: stateName = "PATROL"; break;
+        case CHASE: stateName = "CHASE"; break;
+        case ATTACK: stateName = "ATTACK"; break;
+        case FLEE: stateName = "FLEE"; break;
+        case DEAD: stateName = "DEAD"; break;
+    }
+    std::cout << "Enemy " << name << " state: " << stateName << std::endl;
+    */
 
     updateAI(deltaTime, player);
 
@@ -39,6 +52,10 @@ void Enemy::updateAI(float deltaTime, Player* player) {
     switch (currentState) {
         case IDLE:
             idleBehavior(deltaTime);
+            // some chance to start patrolling
+            if (rand() % 100 < 5) {
+                currentState = PATROL;
+            }
             if (distanceToPlayer < detectionRange) {
                 currentState = CHASE;
             }
@@ -83,7 +100,14 @@ void Enemy::idleBehavior(float deltaTime) {
 }
 
 void Enemy::patrolBehavior(float deltaTime) {
-    // Basic patrol logic can be implemented here
+    // Simple back-and-forth patrol
+    if (facing == LEFT) {
+        speedX = -speed;
+        if (x < 100) facing = RIGHT;
+    } else {
+        speedX = speed;
+        if (x > 700) facing = LEFT;
+    }
 }
 
 void Enemy::chaseBehavior(float deltaTime, Player* player) {
