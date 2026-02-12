@@ -11,9 +11,6 @@
 
 enum class SkillID {
     // COMMON SKILLS
-    SPEED_BOOST,
-    ROLLING_DASH,
-    CRITICAL_HIT_ON_19,
     COOLDOWN_REDUCTION,
 
     // MAGE BRANCH - Common
@@ -70,6 +67,8 @@ enum class SkillID {
     WARRIOR_BLOCK,
     WARRIOR_BLOCK_AND_COUNTER,
     WARRIOR_AREA_ATTACK,
+    WARRIOR_SPEED_BOOST,
+    WARRIOR_ROLLING_DASH,
 
     // WARRIOR BRANCH - Offense
     WARRIOR_OFFENSIVE_STYLE,
@@ -78,6 +77,7 @@ enum class SkillID {
     WARRIOR_KNOCKBACK_II,
     WARRIOR_DASH,
     WARRIOR_DAMAGE_PRECISION_BOOST,
+    WARRIOR_CRITICAL_HIT_ON_19,
 
     // ROGUE BRANCH - Common
     ROGUE_SNEAK_ATTACK,
@@ -108,6 +108,10 @@ enum class SkillID {
     ROGUE_DEX_BOOST,
     ROGUE_POISON_PROBABILITY,
     ROGUE_DISARM,
+    ROGUE_SPEED_BOOST,
+    ROGUE_ROLLING_DASH,
+    ROGUE_CRITICAL_HIT_ON_19,
+
 
     // MERGED BRANCH (WARRIOR/ROGUE) - Weapon Master
     WP_ATTACK_ROLL_BOOST,
@@ -143,12 +147,26 @@ enum class SkillBranch {
     WEAPON_MASTER,
 };
 
+enum class DamageType {
+    PHYSICAL,
+    FIRE,
+    COLD,
+    LIGHTNING,
+    FORCE,
+    POISON,
+    NECROTIC,
+    RADIANT,
+    PSYCHIC,
+    THUNDER,
+    NONE
+};
+
+
 struct SkillData {
     SkillID id;
     std::string name;
     std::string description;
     SkillBranch branch;
-    int cost;
 
     // D&D 5e bonusses
     int damageDiceBonus;
@@ -157,15 +175,21 @@ struct SkillData {
     int acBonus;
     int hpBonus;
     int speedBonus;
-    int extraAttacks;
-
+    int attackSpeedBonus;
+    float cooldownReduction; // Percentage reduction (e.g. 0.1 for 10%)
+    float cooldown;
     int strBonus;
     int dexBonus;
     int conBonus;
     int intBonus;
     int wisBonus;
+    std::string scalingStat; // "STR", "DEX", "CON", "INT", "WIS", "CHA"
+    float fireSpellBonus;
+    float windSpellBonus;
+    float natureSpellBonus;
     int chaBonus;
 
+    DamageType damageType;
     bool isPassive;
     bool grantsAbility;
     std::string abilityName;
@@ -197,6 +221,12 @@ private:
     
     bool hasAllPrerequisites(SkillID skillId) const;
     void initializeSkills();
+
+    void initializeCommonSkills();
+    void initializeMageSkills();
+    void initializeWarriorSkills();
+    void initializeRogueSkills();
+    void initializeMulticlassSkills();
     
 public:
     SkillTree();
@@ -205,7 +235,7 @@ public:
     bool canUnlockSkill(SkillID skillId) const;
     bool unlockSkill(SkillID skillId);
     bool isSkillUnlocked(SkillID skillId) const;
-    
+
     const SkillNode* getSkill(SkillID skillId) const;
     const std::unordered_set<SkillID>& getUnlockedSkills() const { return unlockedSkills; }
     
@@ -223,7 +253,8 @@ public:
     int getTotalACBonus() const;
     int getTotalHPBonus() const;
     int getTotalSpeedBonus() const;
-    int getTotalExtraAttacks() const;
+    float getTotalAttackSpeedBonus() const;
+    float getTotalCooldownReduction() const;    
     int getTotalStrBonus() const;
     int getTotalDexBonus() const;
     int getTotalConBonus() const;
