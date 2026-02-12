@@ -32,10 +32,6 @@ protected:
     float speedX, speedY;
     float speed;
 
-    enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    };
-    Direction facing;
 
     // Attack
     float attackRange;
@@ -88,6 +84,11 @@ public:
 
     // Collision
     bool checkCollision(const SDL_Rect& other) const;
+    
+    enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    };
+    Direction facing;
 
 protected:
     void updateHitbox();

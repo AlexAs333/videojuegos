@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
-#include "../Entities/Character.h"
+#include "../entities/Character.h"
 #include <iostream>
 
 class Player; // Forward declaration

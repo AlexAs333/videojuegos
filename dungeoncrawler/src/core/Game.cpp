@@ -1,9 +1,10 @@
 #include "Game.h"
-#include "../Entities/Player.h"
-#include "../Entities/Enemy.h"
+#include "../entities/Player.h"
+#include "../entities/Enemy.h"
 #include "TextureManager.h"
 #include "InputHandler.h"
 #include <SDL2/SDL_image.h>
+#include "../systems/ai/EnemyAI.h"
 
 Game::Game() : isRunning(false), window(nullptr), renderer(nullptr), player(nullptr), enemy(nullptr) {}
 Game::~Game() {}
@@ -25,9 +26,11 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
                 std::cout << "Error SDL_image: " << IMG_GetError() << std::endl;
             }
 
+            // Declare AI before creating enemy to avoid circular dependency
+            EnemyAI* basicAI = new EnemyAI(200.0f, 300.0f, 0.3f); // detection, aggro, fleeHP
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             player = new Player("assets/human.png", renderer, 100, 100);
-            enemy = new Enemy("Goblin", "assets/goblin.png", renderer, 400, 300);
+            enemy = new Enemy("Goblin", "assets/goblin.png", renderer, 400, 300, basicAI);
 
             lastTime = SDL_GetTicks();
             deltaTime = 0.0f;
