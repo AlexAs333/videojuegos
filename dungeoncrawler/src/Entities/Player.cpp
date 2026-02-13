@@ -1,6 +1,9 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "../core/InputHandler.h"
+#include "../systems/inventory/Inventory.h"
+#include "../items/Potion.h"
+#include <memory>
 
 Player::Player(const char* texturesheet, SDL_Renderer* ren, float startX, float startY)
     : Character("Player", texturesheet, ren, startX, startY),
@@ -23,9 +26,24 @@ Player::Player(const char* texturesheet, SDL_Renderer* ren, float startX, float 
 
     attackCooldown = 1.0f;
     debugColor = {0, 255, 0, 255};
+
+    //Inventario añadido
+    //! 20 unidades con 10 pociones de salud. Solo para test
+    inventory = new Inventory(20);
+    
+    for (int i = 0; i < 10; i++) {
+        auto healthPotion = std::make_shared<Potion>(
+            "Poción de Curación",
+            "Restaura 20 puntos de vida.",
+            0.5f, 50, PotionType::HEALING, 20, 0
+        );
+        inventory->addItem(healthPotion);
+    }
 }
 
-Player::~Player() {}
+Player::~Player() {
+    delete inventory;
+}
 
 void Player::update(float deltaTime) {
     if (isDead) return;
@@ -99,4 +117,28 @@ int Player::rollDamage() const {
     // Longsword: 1d8 + STR
     int d8 = (rand() % 8) + 1;
     return d8 + getMod(strength);
+}
+
+void Player::useHealthPotion() {
+    if (currentHP >= maxHP) {
+        std::cout << "Ya tienes la vida al máximo!" << std::endl;
+        return;
+    }
+    
+    int potionIndex = inventory->findFirstPotionIndex(PotionType::HEALING);
+    
+    if (potionIndex == -1) {
+        std::cout << "¡No tienes pociones de curación!" << std::endl;
+        return;
+    }
+    
+    Potion* potion = dynamic_cast<Potion*>(inventory->getItem(potionIndex));
+    std::cout << "Usando..." << std::endl;
+    if (potion) {
+        currentHP += potion->getEffectPower();
+        if (currentHP > maxHP) currentHP = maxHP;
+        
+        std::cout << "HP: " << currentHP << "/" << maxHP << std::endl;
+        inventory->removeItem(potionIndex);
+    }
 }

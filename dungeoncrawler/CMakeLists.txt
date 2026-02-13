@@ -38,7 +38,7 @@ if(WIN32)
 
     # Flags de compilación (-mwindows -static-libgcc ...)
     target_link_options(${PROJECT_NAME} PRIVATE 
-        -mwindows 
+        #-mwindows 
         -static-libgcc 
         -static-libstdc++
     )

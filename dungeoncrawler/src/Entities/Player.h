@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Character.h"
+#include "../systems/inventory/Inventory.h"
 
 class Enemy;
 
@@ -13,6 +14,7 @@ class Player : public Character {
 private:
     int level;
     int experience;
+    Inventory* inventory;
 
 public:
     Player(const char* texturesheet, SDL_Renderer* ren, float startX, float startY);
@@ -27,6 +29,10 @@ public:
 
     // Override damage calculation for different weapon
     int rollDamage() const override;
+
+    // Inventory methods
+    void useHealthPotion();
+    Inventory* getInventory() { return inventory; }
 
     // Getters
     int getLevel() const { return level; }

@@ -62,7 +62,7 @@ void Game::handleEvents() {
 void Game::update() {
     // Calculate delta time
     Uint32 currentTime = SDL_GetTicks();
-    deltaTime = (currentTime - lastTime) / 1000.0f; // Convert to seconds
+    deltaTime = (currentTime - lastTime) / 1000.0f;
     lastTime = currentTime;
 
     // cap delta time to avoid big jumps
@@ -72,9 +72,20 @@ void Game::update() {
     player->update(deltaTime);
     enemy->update(deltaTime, player);
 
-    // player attack with SPACE
+    // Player attack with SPACE
     if (InputHandler::IsKeyDown(SDL_SCANCODE_SPACE)) {
         player->attack(enemy);
+    }
+    
+    // Usar poción de curación con tecla 9
+    if (InputHandler::IsKeyPressed(SDL_SCANCODE_9)) {
+        std::cout << "Tecla 9 pulsada" << std::endl;
+        player->useHealthPotion();
+    }
+    
+    // Debug: ver inventario con tecla I    //TODO grafico
+    if (InputHandler::IsKeyPressed(SDL_SCANCODE_I)) {
+        player->getInventory()->printInventory();
     }
 }
 
