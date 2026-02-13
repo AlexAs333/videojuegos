@@ -156,3 +156,4 @@ void SkillTree::initializeMageSkills() {
     skills[SkillID::MAGE_NOVA] = std::make_unique<SkillNode>(nova, std::vector<SkillID>{SkillID::MAGE_FIRE_SPELLS_BOOST});
 
 
+}
